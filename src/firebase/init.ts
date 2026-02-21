@@ -1,4 +1,3 @@
-
 'use client';
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
@@ -9,12 +8,14 @@ import { firebaseConfig } from './config';
 
 /**
  * Inicializa los servicios de Firebase de forma segura en el cliente.
+ * Verifica que la configuración mínima (apiKey) esté presente antes de intentar inicializar.
  */
 export function initializeFirebase() {
   if (typeof window === 'undefined') return null;
 
+  // Evitamos el error "invalid-api-key" si la variable no está configurada aún
   if (!firebaseConfig.apiKey) {
-    console.warn("Firebase API Key no configurada. Por favor, revisa tus variables de entorno.");
+    console.warn("Aviso: NEXT_PUBLIC_FIREBASE_API_KEY no encontrada. Configura tu .env.local para activar las funciones de base de datos.");
     return null;
   }
 
