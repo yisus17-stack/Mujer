@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "@/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogIn, ArrowLeft, ShieldAlert } from "lucide-react";
+import { LogIn, ArrowLeft, ShieldAlert, Info } from "lucide-react";
 
 export default function LoginAdmin() {
   const [email, setEmail] = useState("");
@@ -14,6 +14,7 @@ export default function LoginAdmin() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const auth = useAuth();
+  const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,10 +24,11 @@ export default function LoginAdmin() {
     setIsLoading(true);
 
     try {
+      // Intento de inicio de sesión con Firebase
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
       
-      if (userCredential.user.email === adminEmail) {
+      // Verificación de que el correo sea el administrador autorizado
+      if (userCredential.user.email === ADMIN_EMAIL) {
         router.push("/admin");
       } else {
         setError("Este correo no tiene permisos de administrador.");
@@ -34,12 +36,14 @@ export default function LoginAdmin() {
       }
     } catch (err: any) {
       console.error("Login error:", err);
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-        setError("Correo o contraseña incorrectos.");
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+        setError("Credenciales incorrectas. ¿Ya registraste el usuario en la consola de Firebase?");
+      } else if (err.code === 'auth/wrong-password') {
+        setError("Contraseña incorrecta.");
       } else if (err.code === 'auth/too-many-requests') {
         setError("Demasiados intentos fallidos. Inténtalo más tarde.");
       } else {
-        setError("Ocurrió un error al intentar iniciar sesión.");
+        setError("Error al acceder. Verifica tu conexión e inténtalo de nuevo.");
       }
       setIsLoading(false);
     }
@@ -48,7 +52,6 @@ export default function LoginAdmin() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF0F5] via-white to-[#FFE4EC] flex items-center justify-center p-6">
       <div className="bg-white shadow-[0_20px_50px_rgba(159,18,57,0.1)] rounded-[2rem] p-8 md:p-12 w-full max-w-md border border-pink-50 relative overflow-hidden">
-        {/* Decoración superior */}
         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#9F1239] to-[#FFB6CD]"></div>
         
         <div className="flex flex-col items-center mb-8">
@@ -56,7 +59,7 @@ export default function LoginAdmin() {
             <LogIn size={32} />
           </div>
           <h1 className="text-3xl font-black text-[#0F172A] text-center">Acceso Admin 🔐</h1>
-          <p className="text-gray-500 mt-2 text-center">Gestiona los registros del Evento Mujer 2026</p>
+          <p className="text-gray-500 mt-2 text-center">Panel de Control Evento Mujer 2026</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-5">
@@ -85,11 +88,16 @@ export default function LoginAdmin() {
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-red-600 bg-red-50 p-4 rounded-xl text-sm font-medium border border-red-100">
-              <ShieldAlert size={18} />
-              {error}
+            <div className="flex items-start gap-2 text-red-600 bg-red-50 p-4 rounded-xl text-sm font-medium border border-red-100">
+              <ShieldAlert size={18} className="shrink-0 mt-0.5" />
+              <span>{error}</span>
             </div>
           )}
+
+          <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex gap-3 text-xs text-blue-700 font-medium leading-relaxed">
+            <Info size={24} className="shrink-0" />
+            <p>Recuerda que debes crear el usuario <strong>{ADMIN_EMAIL}</strong> manualmente en la consola de Firebase antes de iniciar sesión.</p>
+          </div>
 
           <button
             type="submit"
