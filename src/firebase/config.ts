@@ -1,7 +1,7 @@
 
 /**
- * Configuración de Firebase utilizando variables de entorno.
- * Asegúrate de configurar estas variables en tu entorno de desarrollo/despliegue.
+ * Configuración de Firebase.
+ * Las variables deben estar prefijadas con NEXT_PUBLIC_ para ser accesibles en el cliente.
  */
 export const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",

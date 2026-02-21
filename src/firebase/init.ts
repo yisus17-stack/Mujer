@@ -1,24 +1,28 @@
+
 'use client';
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import { firebaseConfig } from './config';
 
 /**
- * Inicializa los servicios de Firebase de forma segura.
- * Solo debe ser llamada en el lado del cliente.
+ * Inicializa los servicios de Firebase de forma segura en el cliente.
  */
 export function initializeFirebase() {
-  // Verificamos si la configuración es mínima antes de inicializar
+  if (typeof window === 'undefined') return null;
+
   if (!firebaseConfig.apiKey) {
-    throw new Error("Firebase API Key no encontrada. Por favor, configura las variables de entorno.");
+    console.warn("Firebase API Key no configurada. Por favor, revisa tus variables de entorno.");
+    return null;
   }
 
   const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
   
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
-  return { app, auth, db };
+  return { app, auth, db, storage };
 }
