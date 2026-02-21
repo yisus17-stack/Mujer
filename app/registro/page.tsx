@@ -5,7 +5,7 @@ import Link from "next/link";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useFirestore, useStorage } from "@/firebase";
-import { Upload, X, CheckCircle2, AlertCircle } from "lucide-react";
+import { Upload, X, CheckCircle2, AlertCircle, Ticket, DollarSign, Sparkles } from "lucide-react";
 
 interface Integrante {
   nombre: string;
@@ -93,7 +93,6 @@ export default function Registro() {
     let comprobanteUrl = "";
 
     try {
-      // Subir comprobante si existe
       if (file && totalJerseys > 0) {
         const storageRef = ref(storage, `comprobantes/${Date.now()}_${file.name}`);
         const snapshot = await uploadBytes(storageRef, file);
@@ -127,7 +126,6 @@ export default function Registro() {
       }
 
       setAlerta({ tipo: 'exito', mensaje: "¡Registro completado! Te esperamos este 8 de marzo." });
-      // Limpiar formulario
       setFormData({ nombre: "", procedencia: "", edad: "" });
       setIntegrantes([]);
       setJersey("no");
@@ -141,7 +139,7 @@ export default function Registro() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF0F5] to-[#FFE4EC] flex items-center justify-center p-6 pt-24 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF0F5] to-[#FFE4EC] flex items-center justify-center p-6 pt-24 pb-12 text-[#0F172A]">
       {alerta && (
         <div className="fixed inset-0 flex items-center justify-center z-[100] px-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setAlerta(null)}></div>
@@ -232,15 +230,40 @@ export default function Registro() {
           </div>
 
           {(totalJerseys > 0) && (
-            <div className="space-y-4">
-              <div className="bg-[#0F172A] p-6 rounded-[2rem] text-white shadow-xl">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-gray-400 text-sm">Jerseys totales:</span>
-                  <span className="font-bold text-xl">{totalJerseys}</span>
-                </div>
-                <div className="flex justify-between items-end">
-                  <span className="text-pink-200 text-sm font-bold uppercase">Total a Pagar</span>
-                  <span className="text-3xl font-black text-[#FFB6CD]">${totalPagar.toLocaleString()} MXN</span>
+            <div className="space-y-6">
+              {/* Tarjeta de Resumen de Pago Rediseñada */}
+              <div className="relative group overflow-hidden">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#9F1239] to-[#FFB6CD] rounded-[2rem] blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative bg-[#0F172A] p-8 rounded-[2rem] text-white shadow-2xl">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-pink-300">
+                        <Ticket size={20} />
+                      </div>
+                      <span className="text-gray-400 text-sm font-medium">Jerseys solicitados:</span>
+                    </div>
+                    <span className="font-black text-2xl text-white bg-white/10 px-4 py-1 rounded-xl">
+                      {totalJerseys}
+                    </span>
+                  </div>
+                  
+                  <div className="h-px bg-white/10 w-full mb-6"></div>
+
+                  <div className="flex justify-between items-end">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-black uppercase tracking-[0.2em] text-[#FFB6CD]">Total a Pagar</span>
+                        <Sparkles size={14} className="text-[#FFB6CD] animate-pulse" />
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <DollarSign size={20} className="text-gray-400" />
+                        <span className="text-4xl font-black text-white leading-none">
+                          {totalPagar.toLocaleString()}
+                        </span>
+                        <span className="text-sm font-bold text-gray-500 self-end ml-1">MXN</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
