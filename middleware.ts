@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/request";
+import type { NextRequest } from "next/server";
 
+/**
+ * Middleware para Next.js.
+ * Las verificaciones de autenticación se realizan en el lado del cliente
+ * para mantener la compatibilidad con la arquitectura de Firebase Studio.
+ */
 export function middleware(req: NextRequest) {
-  // Client-side authentication checks are preferred in this architecture
   return NextResponse.next();
 }
 
