@@ -18,7 +18,7 @@ export default function AdminPage() {
     if (!userLoading && !user) {
       router.push("/login");
     }
-    if (!userLoading && user && user.email !== "EventoMujer@gmail.com") {
+    if (!userLoading && user && user.email !== "mujeresenbici2026@gmail.com") {
       router.push("/");
     }
   }, [user, userLoading, router]);
@@ -52,7 +52,7 @@ export default function AdminPage() {
     );
   }
 
-  if (!user || user.email !== "EventoMujer@gmail.com") return null;
+  if (!user || user.email !== "mujeresenbici2026@gmail.com") return null;
 
   return (
     <div className="min-h-screen bg-gray-50">
