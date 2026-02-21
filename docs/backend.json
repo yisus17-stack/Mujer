@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "Registration": {
+      "title": "Registration",
+      "description": "Main registration entry for an attendee",
+      "type": "object",
+      "properties": {
+        "nombre": { "type": "string" },
+        "lugar_procedencia": { "type": "string" },
+        "edad": { "type": "number" },
+        "jersey_principal": { "type": "string", "enum": ["si", "no"] },
+        "talla_principal": { "type": "string" },
+        "total_jerseys": { "type": "number" },
+        "total_pagar": { "type": "number" },
+        "comprobante_url": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["nombre", "lugar_procedencia", "edad"]
+    },
+    "Member": {
+      "title": "Member",
+      "description": "Additional member in a group registration",
+      "type": "object",
+      "properties": {
+        "nombre": { "type": "string" },
+        "edad": { "type": "number" },
+        "jersey": { "type": "string", "enum": ["si", "no"] },
+        "talla": { "type": "string" }
+      },
+      "required": ["nombre", "edad"]
+    }
+  },
+  "auth": {
+    "providers": ["password"]
+  },
+  "firestore": {
+    "/registrations/{registrationId}": {
+      "schema": "Registration",
+      "description": "Attendee registrations"
+    },
+    "/registrations/{registrationId}/members/{memberId}": {
+      "schema": "Member",
+      "description": "Additional group members"
+    }
+  }
+}
