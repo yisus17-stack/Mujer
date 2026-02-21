@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "@/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogIn, ArrowLeft, ShieldAlert, Info } from "lucide-react";
+import { LogIn, ArrowLeft, ShieldAlert } from "lucide-react";
 
 export default function LoginAdmin() {
   const [email, setEmail] = useState("");
@@ -24,26 +24,24 @@ export default function LoginAdmin() {
     setIsLoading(true);
 
     try {
-      // Intento de inicio de sesión con Firebase
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
-      // Verificación de que el correo sea el administrador autorizado
       if (userCredential.user.email === ADMIN_EMAIL) {
         router.push("/admin");
       } else {
-        setError("Este correo no tiene permisos de administrador.");
+        setError("Acceso denegado: este correo no tiene permisos de administrador.");
         setIsLoading(false);
       }
     } catch (err: any) {
       console.error("Login error:", err);
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        setError("Credenciales incorrectas. ¿Ya registraste el usuario en la consola de Firebase?");
+        setError("Correo o contraseña incorrectos. Verifica tus credenciales.");
       } else if (err.code === 'auth/wrong-password') {
         setError("Contraseña incorrecta.");
       } else if (err.code === 'auth/too-many-requests') {
-        setError("Demasiados intentos fallidos. Inténtalo más tarde.");
+        setError("Demasiados intentos. Por seguridad, inténtalo más tarde.");
       } else {
-        setError("Error al acceder. Verifica tu conexión e inténtalo de nuevo.");
+        setError("Error de conexión. Inténtalo de nuevo.");
       }
       setIsLoading(false);
     }
@@ -88,16 +86,11 @@ export default function LoginAdmin() {
           </div>
 
           {error && (
-            <div className="flex items-start gap-2 text-red-600 bg-red-50 p-4 rounded-xl text-sm font-medium border border-red-100">
+            <div className="flex items-start gap-2 text-red-600 bg-red-50 p-4 rounded-xl text-sm font-medium border border-red-100 animate-in fade-in slide-in-from-top-1">
               <ShieldAlert size={18} className="shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
-
-          <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex gap-3 text-xs text-blue-700 font-medium leading-relaxed">
-            <Info size={24} className="shrink-0" />
-            <p>Recuerda que debes crear el usuario <strong>{ADMIN_EMAIL}</strong> manualmente en la consola de Firebase antes de iniciar sesión.</p>
-          </div>
 
           <button
             type="submit"
