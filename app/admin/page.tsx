@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/app/components/navbar";
 import { Download, Users, Ticket, DollarSign, Calendar } from "lucide-react";
 
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
 export default function AdminPage() {
   const { user, isLoading: userLoading } = useUser();
   const db = useFirestore();
@@ -18,7 +20,7 @@ export default function AdminPage() {
     if (!userLoading && !user) {
       router.push("/login");
     }
-    if (!userLoading && user && user.email !== "mujeresenbici2026@gmail.com") {
+    if (!userLoading && user && user.email !== ADMIN_EMAIL) {
       router.push("/");
     }
   }, [user, userLoading, router]);
@@ -52,7 +54,7 @@ export default function AdminPage() {
     );
   }
 
-  if (!user || user.email !== "mujeresenbici2026@gmail.com") return null;
+  if (!user || user.email !== ADMIN_EMAIL) return null;
 
   return (
     <div className="min-h-screen bg-gray-50">
