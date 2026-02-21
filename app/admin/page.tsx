@@ -4,8 +4,8 @@ import { useEffect, useMemo } from "react";
 import { useUser, useFirestore, useCollection } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import Navbar from "@/app/components/navbar";
-import { Download, Users, Ticket, DollarSign, Calendar, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { Download, Users, Ticket, DollarSign, Calendar, ShieldCheck, ArrowLeft } from "lucide-react";
 
 export default function AdminPage() {
   const { user, isLoading: userLoading } = useUser();
@@ -59,9 +59,18 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
-      <main className="max-w-7xl mx-auto pt-24 pb-12 px-6">
+      <main className="max-w-7xl mx-auto py-12 px-6">
+        {/* Botón Volver */}
+        <div className="mb-8">
+          <Link 
+            href="/" 
+            className="inline-flex items-center gap-2 text-gray-500 hover:text-[#9F1239] transition-colors font-bold text-sm group"
+          >
+            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+            Volver al Inicio
+          </Link>
+        </div>
+
         {/* Cabecera del Panel */}
         <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 border border-[#FFB6CD]/20 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-2 h-full bg-[#9F1239]"></div>
